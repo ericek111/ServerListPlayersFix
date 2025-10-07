@@ -109,8 +109,16 @@ void ServerListPlayersFix::UpdatePlayers()
 		if (steamId)
 		{
 			auto controller = (CBasePlayerController*)g_pEntitySystem->GetEntityInstance(CEntityIndex(i+1));
-			if(controller)
+			if (!controller)
+				continue;
+
+			void** vtable = *(void***)gameclients;
+			if (vtable == nullptr)
+				return;
+
+			if (controller) {
 				g_steamAPI.SteamGameServer()->BUpdateUserData(*steamId, controller->GetPlayerName(), gameclients->GetPlayerScore(CPlayerSlot(i)));
+			}
 		}
 	}
 }
